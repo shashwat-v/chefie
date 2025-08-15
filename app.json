@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "receipe_app",
-    "slug": "receipe_app",
+    "name": "Chefie",
+    "slug": "Chefie",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

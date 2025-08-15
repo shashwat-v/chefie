@@ -1,61 +1,55 @@
-// import { categories } from "@/images";
+import { getMealCategories } from "@/services/api";
+import useFetch from "@/services/useFetch";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { memo } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const categories: Category[] = [
-  {
-    id: "breakfast",
-    label: "Breakfast",
-    src: require("../../assets/images/food_1.png"),
-  },
-  {
-    id: "vegan",
-    label: "Vegan",
-    src: require("../../assets/images/food_2.png"),
-  },
-  {
-    id: "quick",
-    label: "Quick",
-    src: require("../../assets/images/food_3.png"),
-  },
-  {
-    id: "lunch",
-    label: "Lunch",
-    src: require("../../assets/images/food_4.png"),
-  },
-  {
-    id: "snacks",
-    label: "Snacks",
-    src: require("../../assets/images/food_5.png"),
-  },
-  {
-    id: "dinner",
-    label: "Dinner",
-    src: require("../../assets/images/food_6.png"),
-  },
-  // add more as needed
-];
+import React, { memo, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const CategoryItem = memo(({ label, src }: { label: string; src: any }) => (
   <View className="items-center mr-6 w-24">
     <Image
-      source={src}
+      source={{ uri: src }}
       className="w-24 h-24 rounded-full"
       style={{ resizeMode: "cover" }}
     />
-    <Text className="mt-2 text-center text-base font-semibold">{label}</Text>
+    <Text
+      className="mt-2 text-center text-base font-semibold"
+      numberOfLines={1}
+    >
+      {label}
+    </Text>
   </View>
 ));
 
 const Home = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // const { meals, loading, error } = useFetch(() =>
+  //   // make it dyanmic using search bar
+  //   getMealByName({ query: "" })
+  // );
+  const { meals, loading, error } = useFetch(() =>
+    // make it dyanmic using search bar
+    getMealCategories()
+  );
+
   return (
     <>
-      <SafeAreaView className="bg-white flex-1">
-        {/* Header with name and settings icon */}
+      <ScrollView
+        className="bg-white flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         <View className="px-4">
-          <View className="flex-row items-center justify-between pb-6">
+          {/* Header with name and settings icon */}
+          <View className="flex-row items-center justify-between pb-6 mt-12">
             <Text className="text-2xl font-bold">Home</Text>
             <MaterialIcons name="settings" size={28} />
           </View>
@@ -105,8 +99,63 @@ const Home = () => {
             </TouchableOpacity>
           </View>
 
+          <Text className="text-2xl font-bold mt-6">Categories</Text>
+          {loading ? (
+            <ActivityIndicator />
+          ) : error ? (
+            <Text>${error?.message}</Text>
+          ) : (
+            <FlatList
+              keyExtractor={(item) => item.idCategory.toString()}
+              horizontal={true}
+              data={meals}
+              renderItem={({ item }) => (
+                <CategoryItem
+                  label={item.strCategory}
+                  src={item.strCategoryThumb}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingRight: 16,
+                paddingVertical: 8,
+              }}
+              // snapping behavior
+              snapToAlignment="start"
+              decelerationRate="fast"
+              initialNumToRender={5}
+              windowSize={5}
+            />
+          )}
+
           {/* Categories with clickable links in circle to other pages */}
           <Text className="text-2xl font-bold mt-6">Categories</Text>
+          {/* <View className="mt-6">
+            <FlatList
+              keyExtractor={(item) => item.id.toString()}
+              horizontal={true}
+              data={categories}
+              renderItem={({ item }) => (
+                <CategoryItem
+                  label={item.strCategory}
+                  src={item.strCategoryThumb}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingRight: 16,
+                paddingVertical: 8,
+              }}
+              // snapping behavior
+              snapToAlignment="start"
+              decelerationRate="fast"
+              initialNumToRender={5}
+              windowSize={5}
+            />
+          </View> */}
+
+          {/* Trending Receipes */}
+          {/* <Text className="text-2xl font-bold mt-6">Trending Receipes</Text>
           <View className="mt-6">
             <FlatList
               keyExtractor={(item) => item.id.toString()}
@@ -117,7 +166,7 @@ const Home = () => {
               )}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
-                paddingHorizontal: 16,
+                paddingRight: 16,
                 paddingVertical: 8,
               }}
               // snapping behavior
@@ -126,12 +175,11 @@ const Home = () => {
               initialNumToRender={5}
               windowSize={5}
             />
-          </View>
+          </View> */}
 
-          {/* Trending Receipes */}
           {/* Continue Cooking(already looked dishes) */}
         </View>
-      </SafeAreaView>
+      </ScrollView>
     </>
   );
 };
