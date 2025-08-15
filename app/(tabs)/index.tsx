@@ -1,7 +1,7 @@
 import { getMealCategories } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,22 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-const CategoryItem = memo(({ label, src }: { label: string; src: any }) => (
-  <View className="items-center mr-6 w-24">
-    <Image
-      source={{ uri: src }}
-      className="w-24 h-24 rounded-full"
-      style={{ resizeMode: "cover" }}
-    />
-    <Text
-      className="mt-2 text-center text-base font-semibold"
-      numberOfLines={1}
-    >
-      {label}
-    </Text>
-  </View>
-));
+import { CategoryItem } from "./components/CategoryItem";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
