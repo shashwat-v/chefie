@@ -13,7 +13,6 @@ const useFetch = <T>(fetchFunction: () => Promise<T>, autoFetch = true) => {
       const response = await fetchFunction();
 
       setMeals(response);
-      console.log(response);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occured!"));
     } finally {

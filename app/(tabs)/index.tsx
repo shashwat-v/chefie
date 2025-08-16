@@ -1,3 +1,4 @@
+import { countries } from "@/constants/images";
 import { getMealCategories } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -11,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CategoryItem } from "./components/CategoryItem";
+import CategoryItem from "../components/CategoryItem";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,47 +85,49 @@ const Home = () => {
             </TouchableOpacity>
           </View>
 
+          <Text className="text-2xl font-bold mt-6">Trending Recipes</Text>
+
           <Text className="text-2xl font-bold mt-6">Categories</Text>
-          {loading ? (
-            <ActivityIndicator />
-          ) : error ? (
-            <Text>${error?.message}</Text>
-          ) : (
-            <FlatList
-              keyExtractor={(item) => item.idCategory.toString()}
-              horizontal={true}
-              data={meals}
-              renderItem={({ item }) => (
-                <CategoryItem
-                  label={item.strCategory}
-                  src={item.strCategoryThumb}
-                />
-              )}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingRight: 16,
-                paddingVertical: 8,
-              }}
-              // snapping behavior
-              snapToAlignment="start"
-              decelerationRate="fast"
-              initialNumToRender={5}
-              windowSize={5}
-            />
-          )}
+          <View className="mt-3">
+            {loading ? (
+              <ActivityIndicator />
+            ) : error ? (
+              <Text>${error?.message}</Text>
+            ) : (
+              <FlatList
+                keyExtractor={(item) => item.idCategory.toString()}
+                horizontal={true}
+                data={meals}
+                renderItem={({ item }) => (
+                  <CategoryItem
+                    label={item.strCategory}
+                    src={item.strCategoryThumb}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingRight: 16,
+                  paddingVertical: 8,
+                }}
+                // snapping behavior
+                snapToAlignment="start"
+                decelerationRate="fast"
+                initialNumToRender={5}
+                windowSize={5}
+              />
+            )}
+          </View>
 
           {/* Categories with clickable links in circle to other pages */}
-          <Text className="text-2xl font-bold mt-6">Categories</Text>
-          {/* <View className="mt-6">
+          <Text className="text-2xl font-bold mt-6">Global Recipes</Text>
+
+          <View className="mt-3">
             <FlatList
               keyExtractor={(item) => item.id.toString()}
               horizontal={true}
-              data={categories}
+              data={countries}
               renderItem={({ item }) => (
-                <CategoryItem
-                  label={item.strCategory}
-                  src={item.strCategoryThumb}
-                />
+                <CategoryItem label={item.label} src={item.src} />
               )}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
@@ -137,7 +140,7 @@ const Home = () => {
               initialNumToRender={5}
               windowSize={5}
             />
-          </View> */}
+          </View>
 
           {/* Trending Receipes */}
           {/* <Text className="text-2xl font-bold mt-6">Trending Receipes</Text>

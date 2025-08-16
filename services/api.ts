@@ -24,12 +24,15 @@ export const getMealByName = async ({ query }: { query: string }) => {
 
 // List all meals by first letter
 // www.themealdb.com/api/json/v1/1/search.php?f=a
+// can use this in search for finding dished in alphabetical order
 
 // Lookup full meal details by id
 // www.themealdb.com/api/json/v1/1/lookup.php?i=52772
+// will be used for trending recepies
 
 // Lookup a single random meal
 // www.themealdb.com/api/json/v1/1/random.php
+// surprise me with random meal
 
 // List all meal categories
 // www.themealdb.com/api/json/v1/1/categories.php
@@ -46,6 +49,23 @@ export const getMealCategories = async () => {
   return data.categories;
 };
 
+export const getMealbyCategory = async ({ query }: { query: string }) => {
+  const response = await fetch(
+    `${MEALDB_CONFIG.BASE_URL}/filter.php?i=${query}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Invalid Category");
+  }
+
+  const data = await response.json();
+
+  return data.meals;
+};
+
+// Filter by Category
+// www.themealdb.com/api/json/v1/1/filter.php?c=Seafood
+
 // List all Categories, Area, Ingredients
 // www.themealdb.com/api/json/v1/1/list.php?c=list
 // www.themealdb.com/api/json/v1/1/list.php?a=list
@@ -54,11 +74,35 @@ export const getMealCategories = async () => {
 // Filter by main ingredient
 // www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast
 
-// Filter by Category
-// www.themealdb.com/api/json/v1/1/filter.php?c=Seafood
-
+// find by country
 // Filter by Area
 // www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
+
+export const getMealCountries = async () => {
+  const response = await fetch(`${MEALDB_CONFIG.BASE_URL}/list.php?a=list`);
+
+  if (!response.ok) {
+    throw new Error("Invalid Country");
+  }
+
+  const data = await response.json();
+
+  return data.meals;
+};
+
+export const getMealByCounty = async ({ query }: { query: string }) => {
+  const response = await fetch(
+    `${MEALDB_CONFIG.BASE_URL}/filter.php?a=${query}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Invalid Country");
+  }
+
+  const data = await response.json();
+
+  return data.meals;
+};
 
 // Meal Thumbnail Images
 // Add /preview to the end of the meal image URL
