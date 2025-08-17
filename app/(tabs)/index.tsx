@@ -119,7 +119,7 @@ const Home = () => {
           </View>
 
           {/* Categories with clickable links in circle to other pages */}
-          <Text className="text-2xl font-bold mt-6">Global Recipes</Text>
+          <Text className="text-2xl font-bold mt-6">By Country</Text>
 
           <View className="mt-3">
             <FlatList
