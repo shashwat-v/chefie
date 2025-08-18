@@ -1,6 +1,6 @@
 // app/meals/[name].tsx
 
-import { getMealsbyCategory } from "@/services/api";
+import { getMealsByCategory, getMealsByCountry } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -14,11 +14,11 @@ type Meal = {
 };
 
 export default function MealsByCategoryScreen() {
-  const { name } = useLocalSearchParams<{ name: string }>();
-  const category = String(name ?? "");
+  const { name, type } = useLocalSearchParams<{ name: string; type: string }>();
+  const param = String(name ?? "");
 
   const { meals, loading, error } = useFetch<Meal[]>(() =>
-    getMealsbyCategory(category)
+    type === "area" ? getMealsByCountry(param) : getMealsByCategory(param)
   );
 
   if (loading) {
@@ -39,7 +39,7 @@ export default function MealsByCategoryScreen() {
 
   return (
     <View className="flex-1 bg-white px-4 pt-4">
-      <Text className="text-2xl font-bold mb-3">{category}</Text>
+      <Text className="text-2xl font-bold mb-3">{type}</Text>
 
       <FlatList
         data={meals ?? []}

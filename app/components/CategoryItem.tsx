@@ -13,16 +13,18 @@ interface Props {
   label: string;
   src: ImageSourcePropType | string;
   description?: string;
+  type: string;
 }
 
-const CategoryItem = memo(({ id, label, src, description }: Props) => {
+const CategoryItem = memo(({ id, label, src, description, type }: Props) => {
   const imageSource: ImageSourcePropType =
     typeof src === "string" ? { uri: src } : src;
 
-  // const {}
-
   return (
-    <Link href={{ pathname: "/meals/[name]", params: { name: label } }} asChild>
+    <Link
+      href={{ pathname: "/meals/[name]", params: { name: label, type: type } }}
+      asChild
+    >
       <TouchableOpacity className="">
         <View className="items-center mr-6 w-24">
           <Image

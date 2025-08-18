@@ -37,7 +37,7 @@ const Home = () => {
       >
         <View className="px-4">
           {/* Header with name and settings icon */}
-          <View className="flex-row items-center justify-between pb-6 mt-12">
+          <View className="flex-row items-center justify-between pb-6">
             <Text className="text-2xl font-bold">Home</Text>
             <MaterialIcons name="settings" size={28} />
           </View>
@@ -107,6 +107,7 @@ const Home = () => {
                     label={item.strCategory}
                     src={item.strCategoryThumb}
                     description={item.strCategoryDescription}
+                    type="category"
                   />
                 )}
                 showsHorizontalScrollIndicator={false}
@@ -131,7 +132,7 @@ const Home = () => {
               keyExtractor={(item) => item.id.toString()}
               horizontal={true}
               data={countries}
-              renderItem={({ item }) => <CategoryItem {...item} />}
+              renderItem={({ item }) => <CategoryItem {...item} type="area" />}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
                 paddingRight: 16,

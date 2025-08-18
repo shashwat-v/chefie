@@ -62,7 +62,7 @@ export const getMealCategories = async () => {
   return data.categories;
 };
 
-export const getMealsbyCategory = async (query: string) => {
+export const getMealsByCategory = async (query: string) => {
   const response = await fetch(
     `${MEALDB_CONFIG.BASE_URL}/filter.php?c=${encodeURIComponent(query)}`
   );
@@ -89,6 +89,18 @@ export const getMealsbyCategory = async (query: string) => {
 // find by country
 // Filter by Area
 // www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
+export const getMealsByCountry = async (query: string) => {
+  const response = await fetch(
+    `${MEALDB_CONFIG.BASE_URL}/filter.php?a=${encodeURIComponent(query)}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Invalid Category");
+  }
+
+  const data = await response.json();
+  return data.meals;
+};
 
 export const getMealCountries = async () => {
   const response = await fetch(`${MEALDB_CONFIG.BASE_URL}/list.php?a=list`);
@@ -102,19 +114,19 @@ export const getMealCountries = async () => {
   return data.meals;
 };
 
-export const getMealByCounty = async ({ query }: { query: string }) => {
-  const response = await fetch(
-    `${MEALDB_CONFIG.BASE_URL}/filter.php?a=${query}`
-  );
+// export const getMealByCounty = async ({ query }: { query: string }) => {
+//   const response = await fetch(
+//     `${MEALDB_CONFIG.BASE_URL}/filter.php?a=${query}`
+//   );
 
-  if (!response.ok) {
-    throw new Error("Invalid Country");
-  }
+//   if (!response.ok) {
+//     throw new Error("Invalid Country");
+//   }
 
-  const data = await response.json();
+//   const data = await response.json();
 
-  return data.meals;
-};
+//   return data.meals;
+// };
 
 // Meal Thumbnail Images
 // Add /preview to the end of the meal image URL
