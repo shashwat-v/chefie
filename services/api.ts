@@ -29,6 +29,19 @@ export const getMealByName = async ({ query }: { query: string }) => {
 // Lookup full meal details by id
 // www.themealdb.com/api/json/v1/1/lookup.php?i=52772
 // will be used for trending recepies
+export const getMealById = async (id: string) => {
+  const endpoint = `${MEALDB_CONFIG.BASE_URL}/lookup.php?i=${id}`;
+
+  const response = await fetch(endpoint);
+
+  if (!response.ok) {
+    throw new Error("Failed to Fetch Meals");
+  }
+
+  const data = await response.json();
+
+  return data.meals;
+};
 
 // Lookup a single random meal
 // www.themealdb.com/api/json/v1/1/random.php
@@ -49,9 +62,9 @@ export const getMealCategories = async () => {
   return data.categories;
 };
 
-export const getMealbyCategory = async ({ query }: { query: string }) => {
+export const getMealsbyCategory = async (query: string) => {
   const response = await fetch(
-    `${MEALDB_CONFIG.BASE_URL}/filter.php?i=${query}`
+    `${MEALDB_CONFIG.BASE_URL}/filter.php?c=${encodeURIComponent(query)}`
   );
 
   if (!response.ok) {
@@ -59,7 +72,6 @@ export const getMealbyCategory = async ({ query }: { query: string }) => {
   }
 
   const data = await response.json();
-
   return data.meals;
 };
 

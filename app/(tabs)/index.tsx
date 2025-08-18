@@ -2,7 +2,8 @@ import { countries } from "@/constants/images";
 import { getMealCategories } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,7 +16,8 @@ import {
 import CategoryItem from "../components/CategoryItem";
 
 const Home = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   // const { meals, loading, error } = useFetch(() =>
   //   // make it dyanmic using search bar
@@ -62,6 +64,7 @@ const Home = () => {
           {/* two small tabs saying search receipes and scan ingredients */}
           <View className="flex-row justify-between mt-8">
             <TouchableOpacity
+              onPress={() => router.push("/search")}
               activeOpacity={0.6}
               className="bg-gray-200 py-3 px-6 rounded-full"
             >
@@ -100,8 +103,10 @@ const Home = () => {
                 data={meals}
                 renderItem={({ item }) => (
                   <CategoryItem
+                    id={item.idCategory}
                     label={item.strCategory}
                     src={item.strCategoryThumb}
+                    description={item.strCategoryDescription}
                   />
                 )}
                 showsHorizontalScrollIndicator={false}
@@ -126,9 +131,7 @@ const Home = () => {
               keyExtractor={(item) => item.id.toString()}
               horizontal={true}
               data={countries}
-              renderItem={({ item }) => (
-                <CategoryItem label={item.label} src={item.src} />
-              )}
+              renderItem={({ item }) => <CategoryItem {...item} />}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
                 paddingRight: 16,
