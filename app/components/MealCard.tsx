@@ -18,10 +18,7 @@ const MealCard = memo(({ idMeal, strMeal, strMealThumb }: Meal) => {
   // console.log(idMeal);
 
   return (
-    <Link
-      href={{ pathname: "/meals/meal/[id]", params: { id: idMeal } }}
-      asChild
-    >
+    <Link href={{ pathname: "/meal/[id]", params: { id: idMeal } }} asChild>
       <TouchableOpacity
         className="w-[48%] mb-4"
         accessibilityRole="button"

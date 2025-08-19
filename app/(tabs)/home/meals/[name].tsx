@@ -1,11 +1,9 @@
-// app/meals/[name].tsx
-
+import MealCard from "@/app/components/MealCard";
 import { getMealsByCategory, getMealsByCountry } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import MealCard from "../components/MealCard";
 
 type Meal = {
   idMeal: string;

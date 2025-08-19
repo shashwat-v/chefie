@@ -10,7 +10,7 @@ const ICONS: Record<
     label: string;
   }
 > = {
-  index: { active: "home", inactive: "home-outline", label: "Home" },
+  home: { active: "home", inactive: "home-outline", label: "Home" },
   plan: { active: "calendar", inactive: "calendar-outline", label: "Plan" },
   search: { active: "search", inactive: "search-outline", label: "Search" },
   saved: { active: "bookmark", inactive: "bookmark-outline", label: "Saved" },
@@ -27,7 +27,7 @@ const _layout = () => {
         tabBarInactiveTintColor: "#999",
         tabBarLabelStyle: { fontSize: 12 },
         tabBarIcon: ({ focused, color }) => {
-          const { active, inactive } = ICONS[route.name] ?? ICONS.index;
+          const { active, inactive } = ICONS[route.name] ?? ICONS.home;
           return (
             <Ionicons
               name={focused ? active : inactive}
@@ -38,7 +38,7 @@ const _layout = () => {
         },
       })}
     >
-      <Tabs.Screen name="index" options={{ title: "Home" }} />
+      <Tabs.Screen name="home" options={{ title: "Home" }} />
       <Tabs.Screen name="plan" options={{ title: "Plan" }} />
       <Tabs.Screen name="search" options={{ title: "Search" }} />
       <Tabs.Screen name="saved" options={{ title: "Saved" }} />

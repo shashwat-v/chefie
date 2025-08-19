@@ -16,8 +16,7 @@ export default function RootLayout() {
       >
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="meals/[name]" />
-          <Stack.Screen name="meals/meal/[id]" />
+          <Stack.Screen name="meal/[id]" />
         </Stack>
       </SafeAreaView>
     </SafeAreaProvider>

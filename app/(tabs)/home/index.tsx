@@ -5,7 +5,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   ScrollView,
@@ -13,7 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import CategoryItem from "../components/CategoryItem";
+import CategoryItem from "../../components/CategoryItem";
+import SkeletonCategoryList from "../../components/skeletons/SkeletonCategoryList";
 
 const Home = () => {
   // const [searchQuery, setSearchQuery] = useState("");
@@ -58,7 +58,7 @@ const Home = () => {
                 together in just 20 minutes.
               </Text>
             </View>
-            <Image source={require("../../assets/images/dish.png")} />
+            <Image source={require("../../../assets/images/dish.png")} />
           </View>
 
           {/* two small tabs saying search receipes and scan ingredients */}
@@ -93,7 +93,7 @@ const Home = () => {
           <Text className="text-2xl font-bold mt-6">Categories</Text>
           <View className="mt-3">
             {loading ? (
-              <ActivityIndicator />
+              <SkeletonCategoryList />
             ) : error ? (
               <Text>${error?.message}</Text>
             ) : (

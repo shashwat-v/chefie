@@ -22,7 +22,10 @@ const CategoryItem = memo(({ id, label, src, description, type }: Props) => {
 
   return (
     <Link
-      href={{ pathname: "/meals/[name]", params: { name: label, type: type } }}
+      href={{
+        pathname: "/(tabs)/home/meals/[name]",
+        params: { name: label, type },
+      }}
       asChild
     >
       <TouchableOpacity className="">

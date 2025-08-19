@@ -51,3 +51,5 @@ export const YoutubeCard = ({
     </Pressable>
   );
 };
+
+export default YoutubeCard;
