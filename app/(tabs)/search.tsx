@@ -6,8 +6,8 @@ const search = () => {
   const [query, setQuery] = useState("");
 
   return (
-    <View className="px-4">
-      <View className="flex-row items-center justify-between pb-6 mt-12">
+    <View className="px-4 bg-white">
+      <View className="flex-1 items-center justify-between pb-6 mt-12">
         <Text className="text-2xl font-bold">Search</Text>
         {/* <MaterialIcons name="settings" size={28} /> */}
       </View>

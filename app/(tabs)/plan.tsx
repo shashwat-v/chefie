@@ -3,8 +3,8 @@ import { Text, View } from "react-native";
 
 const plan = () => {
   return (
-    <View>
-      <Text>plan</Text>
+    <View className="bg-white flex-1 items-center justify-center">
+      <Text className="text-2xl">Plan</Text>
     </View>
   );
 };
