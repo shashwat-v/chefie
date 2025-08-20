@@ -1,8 +1,8 @@
+import AppHeader from "@/app/components/AppHeader";
 import { countries } from "@/constants/images";
 import { getMealCategories } from "@/services/api";
 import useFetch from "@/services/useFetch";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import React from "react";
 import {
   FlatList,
@@ -30,25 +30,24 @@ const Home = () => {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          header: () => <AppHeader title="Home" options={true} />,
+        }}
+      />
       <ScrollView
         className="bg-white flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
         <View className="px-4">
-          {/* Header with name and settings icon */}
-          <View className="flex-row items-center justify-between pb-6">
-            <Text className="text-2xl font-bold">Home</Text>
-            <MaterialIcons name="settings" size={28} />
-          </View>
-
           {/* Greetings */}
-          <Text className="text-2xl font-bold">Hi, Shashwat!</Text>
+          <Text className="text-2xl font-bold mt-4">Hi, Shashwat!</Text>
 
           {/* Ai recommended today's special dish with a picture alongside */}
           <View className="flex-row mt-3">
             <View className="flex-1 pr-4">
-              <Text className="text-gray-500">AI Recommended</Text>
+              <Text className="text-gray-500">AI Recommended✨</Text>
               <Text className="mt-2 text-xl font-bold">
                 Creamy Tomato Pasta
               </Text>

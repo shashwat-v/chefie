@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
+import AppHeader from "../components/AppHeader";
 
 const ICONS: Record<
   string,
@@ -39,10 +40,38 @@ const _layout = () => {
       })}
     >
       <Tabs.Screen name="home" options={{ title: "Home" }} />
-      <Tabs.Screen name="plan" options={{ title: "Plan" }} />
-      <Tabs.Screen name="search" options={{ title: "Search" }} />
-      <Tabs.Screen name="saved" options={{ title: "Saved" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+      <Tabs.Screen
+        name="plan"
+        options={{
+          title: "Plan",
+          headerShown: true,
+          header: () => <AppHeader title="Plan" options={true} />,
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: "Search",
+          headerShown: false,
+          header: () => <AppHeader title="Search" options={true} />,
+        }}
+      />
+      <Tabs.Screen
+        name="saved"
+        options={{
+          title: "Saved",
+          headerShown: true,
+          header: () => <AppHeader title="Saved" options={true} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          headerShown: true,
+          header: () => <AppHeader title="Profile" options={true} />,
+        }}
+      />
     </Tabs>
   );
 };

@@ -1,8 +1,15 @@
+import AppHeader from "@/app/components/AppHeader";
 import MealCard from "@/app/components/MealCard";
 import { getMealsByCategory, getMealsByCountry } from "@/services/api";
 import useFetch from "@/services/useFetch";
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import { goBackOr } from "@/utils/nav";
+import {
+  Href,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
+import React, { useCallback, useLayoutEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 type Meal = {
@@ -18,6 +25,33 @@ export default function MealsByCategoryScreen() {
   const { meals, loading, error } = useFetch<Meal[]>(() =>
     type === "area" ? getMealsByCountry(param) : getMealsByCategory(param)
   );
+
+  const navigation = useNavigation();
+  const router = useRouter();
+
+  const handleBack = useCallback(() => {
+    // 1) normal back if there is history
+    if (navigation?.canGoBack && navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+    // 2) fallback route (tab root)
+    router.replace("/home" as Href);
+  }, [navigation, router]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <AppHeader
+          title={name}
+          options={false}
+          onBack={() => goBackOr(navigation, router)}
+        />
+      ),
+      headerTitle: "",
+      headerBackButtonDisplayMode: "minimal",
+    });
+  }, [navigation, name]);
 
   if (loading) {
     return (
@@ -36,26 +70,25 @@ export default function MealsByCategoryScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white px-4 pt-4">
-      <Text className="text-2xl font-bold mb-3">{type}</Text>
-
-      <FlatList
-        data={meals ?? []}
-        keyExtractor={(item) => item.idMeal}
-        numColumns={2}
-        // space between columns
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        renderItem={({ item }) => <MealCard {...item} />}
-        contentContainerStyle={{ paddingBottom: 24 }}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <Text className="text-gray-500 mt-8 text-center">
-            No meals found.
-          </Text>
-        }
-        initialNumToRender={8}
-        windowSize={7}
-      />
-    </View>
+    <>
+      <View className="flex-1 bg-white px-4 pt-4">
+        <FlatList
+          data={meals ?? []}
+          keyExtractor={(item) => item.idMeal}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          renderItem={({ item }) => <MealCard {...item} />}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <Text className="text-gray-500 mt-8 text-center">
+              No meals found.
+            </Text>
+          }
+          initialNumToRender={8}
+          windowSize={7}
+        />
+      </View>
+    </>
   );
 }

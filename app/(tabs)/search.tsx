@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import SearchBar from "../components/SearchBar";
 
 const search = () => {
@@ -7,10 +7,7 @@ const search = () => {
 
   return (
     <View className="px-4 bg-white">
-      <View className="flex-1 items-center justify-between pb-6 mt-12">
-        <Text className="text-2xl font-bold">Search</Text>
-        {/* <MaterialIcons name="settings" size={28} /> */}
-      </View>
+      <View className="flex-1 items-center justify-between pb-6 mt-5"></View>
       <SearchBar
         value={query}
         onChangeText={setQuery}

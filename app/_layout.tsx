@@ -6,7 +6,7 @@ import "./globals.css";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" hidden={true} />
+      <StatusBar style="dark" hidden={false} />
       <SafeAreaView
         className="bg-white flex-1"
         edges={["top", "left", "right"]} // add "bottom" if you want bottom inset globally
