@@ -104,7 +104,9 @@ const MealDetailScreen = () => {
               <Text className="text-2xl font-bold">{strMeal}</Text>
 
               <Text className="text-neutral-500 mt-2">
-                Category: {strCategory ?? "—"} | Area: {strArea ?? "—"}
+                Category:{" "}
+                <Text className="font-bold">{strCategory ?? "—"}</Text> | Area:{" "}
+                <Text className="font-bold">{strArea ?? "—"}</Text>
               </Text>
             </View>
 
