@@ -7,7 +7,7 @@
 *.env.*
 .envrc
 .envrc.*
-.direnv/
+.direnv/git rm --cached .env
 
 # dependencies
 node_modules/
