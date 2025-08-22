@@ -1,5 +1,14 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+# Ignore ALL env files anywhere
+.env
+.env.*
+*.env
+*.env.*
+.envrc
+.envrc.*
+.direnv/
+
 # dependencies
 node_modules/
 
