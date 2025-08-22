@@ -1,6 +1,8 @@
+import { useEmailAuth } from "@/hooks/useEmailAuth";
+import { supabase } from "@/services/supabase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,11 +15,33 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import VerifyEmailDialog from "../components/VerifyEmailDialog";
 
 export default function Signup() {
   const [agree, setAgree] = useState(false);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showVerifyPopup, setShowVerifyPopup] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
+
+  const { loading, onSignUp } = useEmailAuth({
+    onSignedIn: () => router.replace("/(tabs)/home"),
+    onVerificationEmailSent: () => setShowVerifyPopup(true),
+  });
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        if (showVerify) setShowVerify(false);
+        router.replace("/(tabs)/home"); // or your home
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [showVerify]);
 
   return (
     <View className="flex-1 bg-white">
@@ -60,7 +84,8 @@ export default function Signup() {
           <View className="px-6 mt-8">
             <View className="rounded-2xl bg-white border border-gray-100 shadow-sm px-4 py-5">
               <TextInput
-                placeholder="Name"
+                onChangeText={setFullName}
+                placeholder="Full Name"
                 placeholderTextColor="#9CA3AF"
                 keyboardType="default"
                 autoCapitalize="words"
@@ -68,6 +93,7 @@ export default function Signup() {
               />
 
               <TextInput
+                onChangeText={setEmail}
                 placeholder="Email"
                 placeholderTextColor="#9CA3AF"
                 keyboardType="email-address"
@@ -76,6 +102,7 @@ export default function Signup() {
               />
 
               <TextInput
+                onChangeText={setPassword}
                 placeholder="Password"
                 placeholderTextColor="#9CA3AF"
                 secureTextEntry
@@ -83,6 +110,7 @@ export default function Signup() {
               />
 
               <TextInput
+                onChangeText={setConfirmPassword}
                 placeholder="Confirm password"
                 placeholderTextColor="#9CA3AF"
                 secureTextEntry
@@ -121,12 +149,18 @@ export default function Signup() {
                 className={`mt-6 w-full py-4 rounded-2xl items-center justify-center shadow-md ${
                   agree ? "bg-red-500" : "bg-red-500/60"
                 }`}
-                onPress={() => {}}
+                onPress={() => onSignUp(email, password, fullName)}
               >
                 <Text className="text-white text-lg font-semibold">
                   Sign Up
                 </Text>
               </TouchableOpacity>
+
+              <VerifyEmailDialog
+                visible={showVerifyPopup}
+                onClose={() => setShowVerifyPopup(false)}
+                email={email}
+              />
 
               {/* separator */}
               <View className="flex-row items-center my-6">
