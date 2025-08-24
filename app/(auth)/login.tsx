@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -15,8 +15,59 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // show errors only after interaction (onBlur or on submit)
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  // --- validators (same style as signup) ---
+  const validateEmail = (s: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+  // tweak rule if your backend allows shorter passwords; kept 8 for parity with signup
+  const validatePassword = (s: string) => s.length > 0;
+
+  // computed errors
+  const emailError =
+    touched.email && !validateEmail(email)
+      ? "Enter a valid email (e.g., user@example.com)."
+      : "";
+
+  const passwordError =
+    touched.password && !validatePassword(password)
+      ? "Please enter your password"
+      : "";
+
+  // gate for submit
+  const allValid = useMemo(
+    () => validateEmail(email) && validatePassword(password),
+    [email, password]
+  );
+
   const insets = useSafeAreaInsets();
   const router = useRouter();
+
+  // reveal all errors on press; only submit if valid
+  const onSignInPress = () => {
+    setTouched({ email: true, password: true }); // show warnings if empty/invalid
+    if (!allValid) return;
+
+    // ✅ proceed: call your API here
+    console.log("Login OK →", { email: email.trim(), password });
+    // router.replace("/home"); // example
+  };
+
+  const emailBorder = emailError
+    ? "border-red-500"
+    : touched.email && !emailError
+    ? "border-green-500"
+    : "border-gray-200";
+
+  const passwordBorder = passwordError
+    ? "border-red-500"
+    : touched.password && !passwordError
+    ? "border-green-500"
+    : "border-gray-200";
+
+  const isReady = allValid; // for button styling/label only
 
   return (
     <View className="flex-1 bg-white">
@@ -34,7 +85,7 @@ export default function Login() {
             paddingTop: insets.top + 12,
             paddingBottom: insets.bottom + 16,
             flexGrow: 1,
-            justifyContent: "space-between", // keeps footer at bottom on tall screens
+            justifyContent: "space-between",
           }}
           keyboardShouldPersistTaps="handled"
         >
@@ -58,6 +109,7 @@ export default function Login() {
           {/* FORM CARD */}
           <View className="px-6 mt-8">
             <View className="rounded-2xl bg-white border border-gray-100 shadow-sm px-4 py-5">
+              {/* Email */}
               <TextInput
                 placeholder="Email"
                 placeholderTextColor="#9CA3AF"
@@ -65,17 +117,50 @@ export default function Login() {
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
-                className="px-4 py-4 my-1 rounded-xl border border-gray-200 bg-gray-50 text-gray-900"
+                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                className={[
+                  "px-4 py-4 my-1 rounded-xl border bg-gray-50 text-gray-900",
+                  emailBorder,
+                ].join(" ")}
+                returnKeyType="next"
+                textContentType="emailAddress"
+                autoComplete="email"
               />
+              {!!emailError ? (
+                <Text className="text-red-600 text-xs mt-1">{emailError}</Text>
+              ) : (
+                touched.email &&
+                email.trim().length > 0 && (
+                  <Text className="text-green-600 text-[11px] mt-1">
+                    Looks good.
+                  </Text>
+                )
+              )}
 
+              {/* Password */}
               <TextInput
                 placeholder="Password"
                 placeholderTextColor="#9CA3AF"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
-                className="px-4 py-4 my-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900"
+                onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+                className={[
+                  "px-4 py-4 my-3 rounded-xl border bg-gray-50 text-gray-900",
+                  passwordBorder,
+                ].join(" ")}
+                returnKeyType="done"
+                textContentType="password"
               />
+              {!!passwordError ? (
+                <Text className="text-red-600 text-xs my-1">
+                  {passwordError}
+                </Text>
+              ) : (
+                <Text className="text-gray-400 text-[11px] my-1">
+                  At least 8 characters.
+                </Text>
+              )}
 
               <TouchableOpacity className="self-end" onPress={() => {}}>
                 <Text className="text-red-600 font-semibold">
@@ -83,14 +168,17 @@ export default function Login() {
                 </Text>
               </TouchableOpacity>
 
-              {/* primary CTA */}
+              {/* primary CTA — keep tappable to reveal errors, guard inside */}
               <TouchableOpacity
                 activeOpacity={0.85}
-                className="mt-6 w-full py-4 rounded-2xl items-center justify-center bg-red-500 shadow-md"
-                onPress={() => {}}
+                className={[
+                  "mt-6 w-full py-4 rounded-2xl items-center justify-center shadow-md",
+                  isReady ? "bg-red-500" : "bg-red-500/60",
+                ].join(" ")}
+                onPress={onSignInPress}
               >
                 <Text className="text-white text-lg font-semibold">
-                  Sign In
+                  {isReady ? "Sign In" : "Complete form to sign in"}
                 </Text>
               </TouchableOpacity>
 
@@ -108,7 +196,7 @@ export default function Login() {
                 onPress={() => {}}
               >
                 <Image
-                  source={require("../../assets/images/google-logo.png")} // local PNG = fastest
+                  source={require("../../assets/images/google-logo.png")}
                   style={{ width: 18, height: 18, marginRight: 8 }}
                 />
                 <Text className="text-gray-800 font-semibold">
