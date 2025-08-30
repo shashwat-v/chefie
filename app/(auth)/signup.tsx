@@ -43,11 +43,6 @@ export default function Signup() {
   const validatePassword = (s: string) => s.trim().length >= 6;
   const passwordsMatch = password === confirmPassword;
 
-  const { loading, onSignUp } = useEmailAuth({
-    onSignedIn: () => router.replace("/(tabs)/home"),
-    onVerificationEmailSent: () => setShowVerifyPopup(true),
-  });
-
   // Error messages
   const nameError =
     touched.name && !validateName(fullName) ? "Please enter your name." : "";
@@ -77,13 +72,26 @@ export default function Signup() {
   const handleSubmit = () => {
     setTouched({ name: true, email: true, password: true, confirm: true });
     if (!allValid) return;
+
+    onSignUp(email, password, fullName);
+  };
+
+  const { loading, onSignUp } = useEmailAuth({
+    onSignedIn: () => router.replace("/(tabs)/home"),
+    onVerificationEmailSent: () => setShowVerifyPopup(true),
+  });
+
+  const handlePopupOk = () => {
+    // Once the user clicks "OK" on the verification popup, redirect to the home tab
+    setShowVerifyPopup(false); // Close the popup
+    router.replace("/(tabs)/home"); // Redirect to the home tab
   };
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         if (showVerify) setShowVerify(false);
-        router.replace("/(tabs)/home"); // or your home
+        router.replace("/(tabs)/home");
       }
     });
     return () => sub.subscription.unsubscribe();
@@ -91,7 +99,6 @@ export default function Signup() {
 
   return (
     <View className="flex-1 bg-white">
-      {/* soft decorative shapes */}
       <View className="absolute -top-20 -right-16 h-56 w-56 bg-red-100 rounded-full" />
       <View className="absolute top-28 -left-12 h-28 w-28 bg-red-50 rounded-full" />
 
@@ -109,7 +116,6 @@ export default function Signup() {
             justifyContent: "space-between",
           }}
         >
-          {/* HEADER */}
           <View className="px-6">
             <Text className="text-3xl font-extrabold text-gray-900">
               Let’s Get Started
@@ -118,7 +124,6 @@ export default function Signup() {
               Create your own account.
             </Text>
 
-            {/* tiny progress dots for consistency */}
             <View className="flex-row space-x-2 mt-4">
               <View className="h-2 w-6 rounded-full bg-red-500" />
               <View className="h-2 w-2 rounded-full bg-red-200" />
@@ -126,10 +131,8 @@ export default function Signup() {
             </View>
           </View>
 
-          {/* FORM CARD */}
           <View className="px-6 mt-8">
             <View className="rounded-2xl bg-white border border-gray-100 shadow-sm px-4 py-5">
-              {/* Full Name */}
               <TextInput
                 onChangeText={setFullName}
                 onBlur={() => setTouched((t) => ({ ...t, name: true }))}
@@ -160,7 +163,6 @@ export default function Signup() {
                 )
               )}
 
-              {/* Email */}
               <TextInput
                 onChangeText={setEmail}
                 onBlur={() => setTouched((t) => ({ ...t, email: true }))}
@@ -189,7 +191,6 @@ export default function Signup() {
                 </Text>
               )}
 
-              {/* Password */}
               <TextInput
                 onChangeText={setPassword}
                 onBlur={() => setTouched((t) => ({ ...t, password: true }))}
@@ -218,7 +219,6 @@ export default function Signup() {
                 </Text>
               )}
 
-              {/* Confirm Password */}
               <TextInput
                 onChangeText={setConfirmPassword}
                 onBlur={() => setTouched((t) => ({ ...t, confirm: true }))}
@@ -243,7 +243,6 @@ export default function Signup() {
                 </Text>
               )}
 
-              {/* terms */}
               <View className="flex-row items-center mt-3">
                 <Pressable
                   accessibilityRole="checkbox"
@@ -278,7 +277,6 @@ export default function Signup() {
                 </Text>
               )}
 
-              {/* primary CTA */}
               <TouchableOpacity
                 activeOpacity={0.85}
                 disabled={!agree || !allValid}
@@ -287,7 +285,7 @@ export default function Signup() {
                   !agree || !allValid ? "bg-red-500/60" : "bg-red-500",
                 ].join(" ")}
                 onPress={() => {
-                  setAgreeTouched(true); // mark as interacted
+                  setAgreeTouched(true);
                   if (agree && allValid) {
                     handleSubmit();
                   }
@@ -304,14 +302,12 @@ export default function Signup() {
                 email={email}
               />
 
-              {/* separator */}
               <View className="flex-row items-center my-6">
                 <View className="flex-1 h-px bg-gray-300" />
                 <Text className="mx-3 text-gray-500">OR</Text>
                 <View className="flex-1 h-px bg-gray-300" />
               </View>
 
-              {/* Google button (UI only) */}
               <TouchableOpacity
                 activeOpacity={0.85}
                 className="w-full py-4 rounded-2xl items-center justify-center bg-white border border-gray-200 shadow-sm flex-row"
@@ -328,7 +324,6 @@ export default function Signup() {
             </View>
           </View>
 
-          {/* FOOTER */}
           <View className="flex-row items-center justify-center px-6 mt-6">
             <Text className="text-gray-600 mr-1">Already have an account?</Text>
             <TouchableOpacity onPress={() => router.replace("/(auth)/login")}>

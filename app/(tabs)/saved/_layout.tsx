@@ -11,9 +11,8 @@ export default function HomeStack() {
         headerStyle: { backgroundColor: "#fff" },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Home" }} />
-      <Stack.Screen name="meals/[name]" />
-      <Stack.Screen name="meals/meal/[id]" />
+      <Stack.Screen name="index" options={{ title: "Saved" }} />
+      <Stack.Screen name="meal/[id]" />
     </Stack>
   );
 }

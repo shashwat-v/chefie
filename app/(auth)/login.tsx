@@ -1,3 +1,4 @@
+import { useEmailAuth } from "@/hooks/useEmailAuth";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -16,16 +17,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // show errors only after interaction (onBlur or on submit)
   const [touched, setTouched] = useState({ email: false, password: false });
 
-  // --- validators (same style as signup) ---
   const validateEmail = (s: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
-  // tweak rule if your backend allows shorter passwords; kept 8 for parity with signup
   const validatePassword = (s: string) => s.length > 0;
 
-  // computed errors
   const emailError =
     touched.email && !validateEmail(email)
       ? "Enter a valid email (e.g., user@example.com)."
@@ -36,7 +33,6 @@ export default function Login() {
       ? "Please enter your password"
       : "";
 
-  // gate for submit
   const allValid = useMemo(
     () => validateEmail(email) && validatePassword(password),
     [email, password]
@@ -45,14 +41,12 @@ export default function Login() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  // reveal all errors on press; only submit if valid
   const onSignInPress = () => {
-    setTouched({ email: true, password: true }); // show warnings if empty/invalid
+    setTouched({ email: true, password: true });
     if (!allValid) return;
 
-    // ✅ proceed: call your API here
     console.log("Login OK →", { email: email.trim(), password });
-    // router.replace("/home"); // example
+    onSignIn(email, password);
   };
 
   const emailBorder = emailError
@@ -67,11 +61,14 @@ export default function Login() {
     ? "border-green-500"
     : "border-gray-200";
 
-  const isReady = allValid; // for button styling/label only
+  const isReady = allValid;
+
+  const { loading, onSignIn } = useEmailAuth({
+    onSignedIn: () => router.replace("/(tabs)/home"),
+  });
 
   return (
     <View className="flex-1 bg-white">
-      {/* soft decorative shapes */}
       <View className="absolute -top-20 -right-16 h-56 w-56 bg-red-100 rounded-full" />
       <View className="absolute top-28 -left-12 h-28 w-28 bg-red-50 rounded-full" />
 
@@ -89,7 +86,6 @@ export default function Login() {
           }}
           keyboardShouldPersistTaps="handled"
         >
-          {/* HEADER */}
           <View className="px-6">
             <Text className="text-3xl font-extrabold text-gray-900">
               Welcome Back!
@@ -98,7 +94,6 @@ export default function Login() {
               Please enter your details.
             </Text>
 
-            {/* tiny progress dots for consistency */}
             <View className="flex-row space-x-2 mt-4">
               <View className="h-2 w-2 rounded-full bg-red-500" />
               <View className="h-2 w-2 rounded-full bg-red-200" />
@@ -106,10 +101,8 @@ export default function Login() {
             </View>
           </View>
 
-          {/* FORM CARD */}
           <View className="px-6 mt-8">
             <View className="rounded-2xl bg-white border border-gray-100 shadow-sm px-4 py-5">
-              {/* Email */}
               <TextInput
                 placeholder="Email"
                 placeholderTextColor="#9CA3AF"
@@ -137,7 +130,6 @@ export default function Login() {
                 )
               )}
 
-              {/* Password */}
               <TextInput
                 placeholder="Password"
                 placeholderTextColor="#9CA3AF"
@@ -168,7 +160,6 @@ export default function Login() {
                 </Text>
               </TouchableOpacity>
 
-              {/* primary CTA — keep tappable to reveal errors, guard inside */}
               <TouchableOpacity
                 activeOpacity={0.85}
                 className={[
@@ -182,14 +173,12 @@ export default function Login() {
                 </Text>
               </TouchableOpacity>
 
-              {/* separator */}
               <View className="flex-row items-center my-6">
                 <View className="flex-1 h-px bg-gray-300" />
                 <Text className="mx-3 text-gray-500">OR</Text>
                 <View className="flex-1 h-px bg-gray-300" />
               </View>
 
-              {/* Google button (UI only) */}
               <TouchableOpacity
                 activeOpacity={0.85}
                 className="w-full py-4 rounded-2xl items-center justify-center bg-white border border-gray-200 shadow-sm flex-row"
@@ -206,7 +195,6 @@ export default function Login() {
             </View>
           </View>
 
-          {/* FOOTER */}
           <View className="flex-row items-center justify-center px-6 mt-6">
             <Text className="text-gray-600 mr-1">Don’t have an account?</Text>
             <TouchableOpacity onPress={() => router.replace("/(auth)/signup")}>

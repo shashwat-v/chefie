@@ -56,14 +56,7 @@ const _layout = () => {
           header: () => <AppHeader title="Search" options={true} />,
         }}
       />
-      <Tabs.Screen
-        name="saved"
-        options={{
-          title: "Saved",
-          headerShown: true,
-          header: () => <AppHeader title="Saved" options={true} />,
-        }}
-      />
+      <Tabs.Screen name="saved" options={{ title: "Saved" }} />
       <Tabs.Screen
         name="profile"
         options={{

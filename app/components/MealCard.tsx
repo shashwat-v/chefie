@@ -1,4 +1,3 @@
-// components/MealCard.tsx
 import { Link } from "expo-router";
 import React, { memo } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";

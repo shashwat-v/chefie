@@ -30,7 +30,9 @@ export function useEmailAuth(opts: Options = {}) {
 
       if (verificationEmailSent) {
         opts.onVerificationEmailSent?.();
+        opts.onSignedIn?.();
       } else if (session) {
+        console.log(session);
         opts.onSignedIn?.();
       }
     } catch (err: any) {
