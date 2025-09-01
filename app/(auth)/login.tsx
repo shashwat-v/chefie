@@ -1,4 +1,3 @@
-import { useEmailAuth } from "@/hooks/useEmailAuth";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -46,7 +45,6 @@ export default function Login() {
     if (!allValid) return;
 
     console.log("Login OK →", { email: email.trim(), password });
-    onSignIn(email, password);
   };
 
   const emailBorder = emailError
@@ -62,10 +60,6 @@ export default function Login() {
     : "border-gray-200";
 
   const isReady = allValid;
-
-  const { loading, onSignIn } = useEmailAuth({
-    onSignedIn: () => router.replace("/(tabs)/home"),
-  });
 
   return (
     <View className="flex-1 bg-white">

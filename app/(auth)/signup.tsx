@@ -1,8 +1,6 @@
-import { useEmailAuth } from "@/hooks/useEmailAuth";
-import { supabase } from "@/services/supabase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -72,30 +70,13 @@ export default function Signup() {
   const handleSubmit = () => {
     setTouched({ name: true, email: true, password: true, confirm: true });
     if (!allValid) return;
-
-    onSignUp(email, password, fullName);
   };
-
-  const { loading, onSignUp } = useEmailAuth({
-    onSignedIn: () => router.replace("/(tabs)/home"),
-    onVerificationEmailSent: () => setShowVerifyPopup(true),
-  });
 
   const handlePopupOk = () => {
     // Once the user clicks "OK" on the verification popup, redirect to the home tab
     setShowVerifyPopup(false); // Close the popup
     router.replace("/(tabs)/home"); // Redirect to the home tab
   };
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        if (showVerify) setShowVerify(false);
-        router.replace("/(tabs)/home");
-      }
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [showVerify]);
 
   return (
     <View className="flex-1 bg-white">
