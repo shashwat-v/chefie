@@ -1,5 +1,9 @@
+import { auth } from "@/services/firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { AuthError, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useMemo, useState } from "react";
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -12,11 +16,31 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const msgFromError = (error: unknown): string => {
+  const code = (error as AuthError)?.code ?? "";
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+      return "Incorrect email or password.";
+    case "auth/user-not-found":
+      return "No account found with this email.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Try again later.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/network-request-failed":
+      return "Network error. Check your connection.";
+    default:
+      return "Could not sign in. Please try again.";
+  }
+};
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [touched, setTouched] = useState({ email: false, password: false });
+  const [loading, setLoading] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
 
   const validateEmail = (s: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
@@ -40,11 +64,23 @@ export default function Login() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const onSignInPress = () => {
+  const onSignInPress = async () => {
     setTouched({ email: true, password: true });
     if (!allValid) return;
 
-    console.log("Login OK →", { email: email.trim(), password });
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+      // record last login for your session max-days logic
+      await AsyncStorage.setItem("lastLogin", String(Date.now()));
+      // optional: you can rely on app/index.tsx onAuthStateChanged to redirect,
+      // but pushing here makes UI snappier:
+      router.replace("/(tabs)/home");
+    } catch (e) {
+      setErrorText(msgFromError(e));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const emailBorder = emailError

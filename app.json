@@ -10,8 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.galaxies.firebase",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.galaxies.firebase"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +18,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.galaxies.firebase",
-      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true
     },
     "web": {
@@ -29,9 +27,6 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-build-properties", { "ios": { "useFrameworks": "static" } }],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
       [
         "expo-splash-screen",
         {
@@ -41,8 +36,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-sqlite",
-      "expo-build-properties"
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,5 +1,8 @@
+import { auth } from "@/services/firebase";
 import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useMemo, useState } from "react";
 import {
   Image,
@@ -26,6 +29,7 @@ export default function Signup() {
   const [showVerifyPopup, setShowVerifyPopup] = useState(false);
   const [showVerify, setShowVerify] = useState(false);
   const [agreeTouched, setAgreeTouched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [touched, setTouched] = useState({
     name: false,
@@ -67,9 +71,38 @@ export default function Signup() {
     [fullName, email, password, passwordsMatch]
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setTouched({ name: true, email: true, password: true, confirm: true });
     if (!allValid) return;
+
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, {
+          displayName: fullName.trim(),
+        });
+      }
+
+      // Optionally: sendEmailVerification(auth.currentUser!)
+      await AsyncStorage.setItem("lastLogin", String(Date.now()));
+
+      console.log("User signed up:", {
+        email: userCredential.user.email,
+        name: auth.currentUser?.displayName,
+      });
+
+      router.replace("/(tabs)/home");
+    } catch (e: any) {
+      alert(e?.message ?? "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePopupOk = () => {
