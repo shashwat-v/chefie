@@ -8,28 +8,24 @@ import {
   type Auth,
 } from "firebase/auth";
 
-// 🔑 Your Firebase project config
-// Get this from Firebase Console → Project Settings → Your apps (</> Web app)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID", // will look like 1:1234567890:web:abcdef123456
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// ✅ Initialize Firebase app once
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// ✅ Initialize Auth with AsyncStorage persistence
 let auth: Auth;
 try {
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
   });
 } catch {
-  // If already initialized (Fast Refresh), just grab the existing instance
   auth = getAuth(app);
 }
 
