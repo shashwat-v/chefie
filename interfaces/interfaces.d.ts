@@ -16,3 +16,11 @@ type Meal = {
   // strIngredient1..20 & strMeasure1..20 exist on the object
   [key: string]: any;
 };
+
+interface TrendingMeal {
+  searchTerm: string;
+  meal_id: number;
+  title: string;
+  count: number;
+  poster_url: string;
+}

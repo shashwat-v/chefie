@@ -44,12 +44,11 @@ const SearchBar = forwardRef<TextInput, Props>(
           placeholderTextColor="#775c5c"
           returnKeyType="search"
           onSubmitEditing={onSubmitEditing}
-          // 👇 key bits to avoid clipping
           className="
             ml-3 flex-1
-            text-[16px] leading-[20px]      /* line-height >= font-size */
+            text-[16px] leading-[20px]      
             text-[#775c5c]
-            h-full py-0                     /* no extra vertical padding inside input */
+            h-full py-0
           border-"
         />
       </Pressable>

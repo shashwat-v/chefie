@@ -1,6 +1,9 @@
 import AppHeader from "@/app/components/AppHeader";
+import SkeletonTrendingRow from "@/app/components/skeletons/SkeletonTrendingRow";
+import TrendingCard from "@/app/components/TrendingCard";
 import { countries } from "@/constants/images";
 import { getMealCategories } from "@/services/api";
+import { getTrendingMeals } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
 import { Stack, useRouter } from "expo-router";
 import React from "react";
@@ -16,17 +19,13 @@ import CategoryItem from "../../components/CategoryItem";
 import SkeletonCategoryList from "../../components/skeletons/SkeletonCategoryList";
 
 const Home = () => {
-  // const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-
-  // const { meals, loading, error } = useFetch(() =>
-  //   // make it dyanmic using search bar
-  //   getMealByName({ query: "" })
-  // );
-  const { meals, loading, error } = useFetch(() =>
-    // make it dyanmic using search bar
-    getMealCategories()
-  );
+  const { meals, loading, error } = useFetch(() => getMealCategories());
+  const {
+    meals: tredingMeals,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useFetch(() => getTrendingMeals());
 
   return (
     <>
@@ -87,7 +86,36 @@ const Home = () => {
             </TouchableOpacity>
           </View>
 
-          <Text className="text-2xl font-bold mt-6">Trending Recipes</Text>
+          <View>
+            <Text className="text-2xl font-bold mt-6">Trending Recipes</Text>
+            {trendingLoading ? (
+              <SkeletonTrendingRow />
+            ) : trendingError ? (
+              <Text>Some Error Occured</Text>
+            ) : (
+              <FlatList
+                horizontal
+                data={tredingMeals}
+                // keyExtractor={(item) => item.meal_id.toString()}
+                renderItem={({ item }) => (
+                  <TrendingCard
+                    title={item.title}
+                    posterUrl={item.poster_url}
+                    count={item.count}
+                    onPress={() =>
+                      router.push(`/(tabs)/home/meals/meal/${item.meal_id}`)
+                    }
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingRight: 16, paddingVertical: 8 }}
+                snapToAlignment="start"
+                decelerationRate="fast"
+                initialNumToRender={5}
+                windowSize={10}
+              />
+            )}
+          </View>
 
           <Text className="text-2xl font-bold mt-6">Categories</Text>
           <View className="mt-3">
@@ -144,29 +172,6 @@ const Home = () => {
               windowSize={5}
             />
           </View>
-
-          {/* Trending Receipes */}
-          {/* <Text className="text-2xl font-bold mt-6">Trending Receipes</Text>
-          <View className="mt-6">
-            <FlatList
-              keyExtractor={(item) => item.id.toString()}
-              horizontal={true}
-              data={categories}
-              renderItem={({ item }) => (
-                <CategoryItem label={item.label} src={item.src} />
-              )}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingRight: 16,
-                paddingVertical: 8,
-              }}
-              // snapping behavior
-              snapToAlignment="start"
-              decelerationRate="fast"
-              initialNumToRender={5}
-              windowSize={5}
-            />
-          </View> */}
 
           {/* Continue Cooking(already looked dishes) */}
         </View>
